@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register</h1>
+    <form id="register-form">
+        {% csrf_token %}
+        <label for="display-name">Display Name:</label>
+        <input type="text" id="display-name" name="displayName" required><br>
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" name="first_name" required><br>
+        <label for="last-name">Last Name:</label> 
+        <input type="text" id="last-name" name="last_name" required><br>
+        <label for="github">GitHub:</label>
+        <input type="text" id="github" name="github" required><br>
+        <label for="profile-image">Profile Image:</label>
+        <input type="text" id="profile-image" name="profile_image" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <label for="password2">Confirm Password:</label>
+        <input type="password" id="password2" name="password2" required><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <button onclick="redirectToLogin()">Already have an account? Login</button>
+
+    <script>
+        document.getElementById('register-form').setAttribute('action', "{% url 'client:register' %}");
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.getAttribute('action'), {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    // Store the token securely (e.g., in session storage)
+                    sessionStorage.setItem('token', data.token);
+                    // Redirect to the landing page or another authenticated page
+                    window.location.href = "{% url 'client:landing-page' %}";
+                } else {
+                    alert('Registration failed. Please check your inputs.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while registering.');
+            });
+        });
+
+        function redirectToLogin() {
+            window.location.href = "{% url 'client:login' %}?redirect=True";
+        }
+    </script>
+</body>
+</html>

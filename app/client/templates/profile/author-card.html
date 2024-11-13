@@ -1,0 +1,14 @@
+{% load filters %}
+
+<article class="author-card">
+    <img src="{{author.profileImage}}" alt="avatar" class="author-avatar"
+    onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';"/>
+    
+    <div class="author-details">
+        <a href="{%url 'client:profile_detail' author_id=author.id|getId %}">{{author.displayName}}</a>
+        {% if request.get_host not in author.url%}
+            <p class="tag">remote</p>
+            <p class="secondary-tag">{{author.host}}</p>
+        {% endif %}
+    </div>
+</article>

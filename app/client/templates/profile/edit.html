@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load filters%}
+
+{% block content %}
+    <h1>Edit {{author.displayName}}'s Profile</h1>
+    <form method="post" action="{% url 'client:profile_edit' author_id=author.id|getId %}" class="styled-form">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Save" class="action-button">
+    </form>
+{% endblock %}

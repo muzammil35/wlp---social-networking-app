@@ -1,0 +1,67 @@
+{% extends "base.html" %} 
+{% load filters %}
+
+{% block content %}
+    <section class="profile-header">
+        <div class="author-info">
+            <img src="{{author.profileImage}}" alt="avatar" class="author-avatar"
+                onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';"/>
+            <h1 class="author-name">
+                {{author.displayName}}'s profile
+            </h1>
+            {% if author.approved %}
+                <i class="fas fa-check" style="color: #38c23e;font-size:1.5rem;" ></i>
+            {% else %}
+                <i class="fas fa-times" style="color: #c23838;font-size:1.5rem;"></i>
+            {% endif %}
+        </div>
+        
+        <div class="author-actions">
+            {% if user.is_authenticated %}
+                {% if is_own_profile %}
+                    {% if author.github %}
+                        <form method="get" action="{% url 'client:poll_github' author_id=author.id|getId %}">
+                            {% csrf_token %}
+                            <button type="submit" class="secondary-action-button"><i class="fab fa-github"></i> Poll GitHub</button>
+                        </form>
+                    {% endif %}
+                
+                    <form method="get" action="/profile/{{author.id|getId}}/edit">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary-action-button"><i class="fas fa-edit"></i> Edit Profile</button>
+                    </form>
+                    
+                    <form method="post" action="{% url 'client:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary-action-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </form>
+                {% else %}
+                    {% if is_following_author %}
+                        <form method="post" action="{% url 'client:unfollow_profile' author_id=author.id|getId %}">
+                            {% csrf_token %}
+                            <button type="submit" class="follow-button">Unfollow</button>
+                        </form>
+                    {% elif is_pending %}
+                        <button disabled type="submit" class="follow-button">Requested</button>
+                    {% else %}
+                        <form method="post" action="{% url 'client:follow_profile' author_id=author.id|getId %}">
+                            {% csrf_token %}
+                            <button type="submit" class="follow-button">Follow</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        
+    </section>
+
+   
+
+    {% for post in posts%}
+        {% include 'posts/post-card.html'%}
+    {% endfor %}
+    {% if not posts %}
+        <p>No posts yet</p>
+    {% endif %}
+
+{% endblock %}

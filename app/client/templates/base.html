@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" href="{% static 'popup_style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>WLP</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>WLP <i class="fas fa-feather"></i></h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="/" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+              <i class="fas fa-home"></i> <p>Home</p>
+            </a>
+          </li>
+          <li>
+            <a href="/inbox" class="{% if request.resolver_match.url_name == 'inbox' %}active{% endif %}">
+              <i class="fas fa-inbox"></i> <p>Inbox</p>
+              <div id="notification-badge">
+                <span id="notification-count"></span>
+            </div>
+            </a>
+          </li>
+          <li>
+            <a href="/authors" class="{% if 'authors' in request.resolver_match.url_name %}active{% endif %}">
+              <i class="fas fa-search"></i> <p>Authors</p>
+            </a>
+          </li>
+          <li>
+            <a href="/profile" class="{% if 'profile' in request.resolver_match.url_name %}active{% endif %}">
+              <i class="fas fa-user"></i> <p>Profile</p>
+            </a>
+          </li>
+          <li>
+            {% if user.is_authenticated %}
+              {% with request.user.author as author %}
+                {% if author.approved %}
+                 <button id="createPostBtn">Post</button>
+                {% endif %}
+              {% endwith %}
+            {% endif %}
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="main-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="message message-{{ message.tags }}">
+          {{ message }}
+          <button class="message-dismiss" onclick="this.parentElement.style.display='none';">&times;</button>
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+{% include 'posts/create_post_popup.html' %}
+
+<body data-author-id="{{ request.user.author.id }}"></body>
+
+{% block scripts %}
+<script src="{% static 'js/dynamic_form.js' %}"></script>
+{% if request.user.author.approved and request.user.is_authenticated %}
+<script src="{% static 'js/notifications.js' %}"></script>
+{% endif %}
+{% endblock scripts %}
+  </body>
+</html>

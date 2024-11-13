@@ -1,0 +1,230 @@
+.post-card {
+  background-color: var(--grey-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  * {
+    margin: 0;
+  }
+
+  .post-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    position: relative;
+    gap: 0.5rem;
+
+    .author-avatar {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+    }
+
+    .name-date {
+      font-size: 0.8rem;
+      font-weight: 500;
+
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      .date {
+        color: rgb(163, 163, 163);
+      }
+    }
+
+    form {
+      margin-left: auto;
+    }
+
+    .post-action-container {
+      margin-left: auto;
+
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
+  }
+
+  .description {
+    font-style: italic;
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+  .content {
+    margin: 0.5rem 0;
+  }
+
+  .markdown-content p a {
+    color: #fca311;
+    text-decoration: none;
+  }
+
+  .markdown-content p a:hover {
+    text-decoration: underline;
+  }
+
+  hr {
+    border: 0.5px solid rgb(230, 230, 230);
+  }
+
+  .post-image-container {
+    width: 100%;
+    margin: 0.5rem 0;
+
+    .post-image {
+      border-radius: 5px;
+      width: 100%;
+      height: auto;
+      max-width: 600px;
+      object-fit: cover;
+      margin: auto 0;
+      margin-right: auto;
+    }
+  }
+
+  .tags {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+  }
+
+  .post-content {
+    text-wrap: wrap;
+    word-break: break-all;
+    white-space: normal;
+  }
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+
+  .author-avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+  }
+
+  a {
+    font-weight: 500;
+  }
+
+  .author-details {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+.follow-request-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--grey-color);
+  border-radius: 8px;
+  padding: 1rem;
+  gap: 1rem;
+  width: fit-content;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    p {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        padding: 0.25rem 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--accent-color);
+        color: white;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        width: 100%;
+
+        &:hover {
+          filter: brightness(0.8);
+        }
+      }
+
+      .btn-reject {
+        background-color: rgb(238, 114, 114);
+      }
+    }
+  }
+}
+
+.follow-requests-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inbox-entry-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--grey-color);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+  }
+
+  .indicator {
+    border-radius: 100%;
+    background-color: white;
+    padding: 0.6rem 0.75rem;
+    z-index: 1;
+  }
+
+  .like-icon {
+    background-color: rgb(238, 114, 114);
+    color: white;
+  }
+
+  .comment-icon {
+    background-color: rgb(114, 122, 238);
+    color: white;
+  }
+
+  .share-icon {
+    background-color: var(--accent-color);
+    color: white;
+  }
+
+  .author-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    margin-left: -1rem;
+  }
+
+  .icons {
+    display: flex;
+  }
+}

@@ -1,0 +1,19 @@
+{% load filters %}
+<div class="follow-request-card">
+    <img src="{{ follower.profileImage }}"  alt="avatar" onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';">
+    <div class="card-content">
+        <a href="{%url 'client:profile_detail' author_id=follower.id|getId %}"><p>{{follower.displayName}}</p></a>
+    
+        <div class="button-container">  
+            <form method="post" action="{% url 'client:follow_accept' foreign_author_id=follower.url|urlEncode %}">
+                {% csrf_token %}
+                <button href="" type="submit"  class="btn"> Accept </button>
+            </form>
+            <form method="post" action="{% url 'client:follow_reject' foreign_author_id=follower.url|urlEncode %}">
+                {% csrf_token %}
+                <button href="" type="submit"  class="btn-reject"> Reject </button>
+            </form> 
+        </div>
+    </div>
+</div>
+

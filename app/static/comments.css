@@ -1,0 +1,81 @@
+.comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align items on opposite ends */
+    margin-bottom: 10px;
+}
+
+.comment span {
+    margin-right: auto; /* This pushes the button container to the right */
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+.edit-delete-btn {
+    margin-right: 10px; /* Space between Edit and Delete buttons */
+    color: #666;
+    background-color: #f0f0f0; /* Example background */
+    border: 1px solid #ddd; /* Example border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 6px 6px; /* Padding inside the buttons */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 14px; /* Smaller font size for buttons */
+}
+
+.edit-delete-btn:hover {
+    background-color: #e9e9e9; /* Slightly darker background on hover */
+}
+
+.add-comment-btn {
+    background-color: #fca311; 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.add-comment-btn:hover {
+    background-color: #ca8414; /* darker shade of blue for hover*/
+}
+
+/* below is for comment form */
+
+#commentFormContainer {
+    margin: 10px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#commentFormContainer form {
+    display: flex;
+    flex-direction: column;
+}
+
+#commentFormContainer p {
+    margin: 0 0 10px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside the text fields */
+    margin: 8px 0 15px 0; /* Margin for spacing */
+    display: inline-block; /* Necessary for widths to work */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 4px; /* Rounded corners for text fields */
+    box-sizing: border-box; /* Box sizing to include padding in width */
+}
+
+textarea {
+    height: 150px; /* Height for text area */
+    resize: vertical; /* Allow only vertical resize */
+}

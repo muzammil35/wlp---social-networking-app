@@ -1,0 +1,75 @@
+{% extends "base.html" %} 
+
+{% block content %}
+
+    <div class="inbox-content">
+        <section style="margin-bottom: 1rem;">
+            <h1 style="margin-bottom: 0.5rem;">Follow Requests</h1>
+            {% if followRequests|length == 0 %}
+                <p>No follow requests...</p>
+            {% else %}
+                <div class="follow-requests-container">
+                    {% for follower in followRequests %}
+                        {% include 'inbox/follow-request-card.html'%}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="notifications">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom: 0.5rem;">
+                <h1 >Notifications</h1>
+                <div class="inbox-actions">
+                    <form method="post" action="{% url 'client:inbox_delete' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary-action-button" style="padding:0.5rem;">
+                            <i class="fas fa-trash"></i> 
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            {% if inboxItems|length == 0 %}
+                <p>Inbox is empty...</p>
+            {% endif %}
+
+            {% for item in inboxItems %}
+                {% comment %} Could be of type like, comment or post {% endcomment %}
+                {% if item.type == 'post' %}
+                    <div class="inbox-entry-card ">
+                        <div class="indicator share-icon">
+                            <i class="fas fa-share"></i>
+                        </div>
+                        <p>Someone shared a post with you!: <b>{{item.title}}</b></p>
+                    </div>
+                {% elif item.type == 'comment' %}
+                    <div class="inbox-entry-card ">
+                        <div class="icons">
+                            <div class="indicator comment-icon">
+                                <i class="fas fa-comment"></i>
+                            </div>
+                            <img src="{{item.author.profileImage}}" alt="avatar" class="author-avatar"
+                                onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';" width="50px" height="10%"/>
+                        </div>
+                        
+                        <p>{{item.author.displayName}} commented on your post: <b>{{item.comment}}</b></p>
+                    </div>
+                    
+                {% elif item.type == 'Like' %}
+                    <div class="inbox-entry-card ">
+                        <div class="icons">
+                            <div class="indicator like-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <img src="{{item.author.profileImage}}" alt="avatar" class="author-avatar"
+                                onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';" width="50px" height="10%"/>
+                        </div>
+                        
+                        <p>{{item.summary}}</p>
+                    </div>
+                {% endif %} 
+            {% endfor %}
+        </section>
+    </div>
+    
+{% endblock %}

@@ -1,0 +1,42 @@
+.styled-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      border: none;
+      background-color: rgba(206, 206, 206, 0.301);
+      padding: 0.8rem;
+    }
+  }
+
+  .action-button {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 3px;
+    background-color: black;
+    color: white;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: white;
+      border: 2px solid black;
+      color: #fca311;
+    }
+  }
+}

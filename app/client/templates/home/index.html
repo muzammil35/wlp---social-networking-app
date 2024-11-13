@@ -1,0 +1,91 @@
+{% extends "base.html" %} 
+
+{% block content %}
+    {% comment %} For non authenticated users {% endcomment %}
+    {% if not user.is_authenticated %}
+        <div class="login-banner">
+            <a href="{% url 'client:login' %}" >
+                You're not currently logged in, log in?
+            </a>
+        </div>
+
+        <h2>Meanwhile, here are some of the authors on the platform</h2>
+
+        {% for author in authors%}
+            {%include 'profile/author-card.html'%}
+        {% endfor %}
+    {% else %}
+        <div id="sliding-container">
+            <div id="new-post-banner" style="opacity:0;">
+                <p id="new-post-banner-content">You have 3 new posts, refresh the page to see them!</p>
+                <button onclick="this.parentElement.style.display='none';">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div id="posts-container">
+                {% for post in posts %}
+                    {% include 'posts/post-card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        {% if posts|length == 0 and authors|length == 0 %}
+            <h2>Nothing here...</h2>
+        {% endif %}
+    {% endif %}
+    
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+            <li class="message message-{{ message.tags }}">
+            {{ message }}
+            <button class="message-dismiss" onclick="this.parentElement.style.display='none';">&times;</button>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                let lastRequestTime = 0; // Initial timestamp
+                let notifications = document.querySelector('.notifications');
+                
+                // Fetch posts every 5 seconds
+                setInterval(() => {
+                    fetch('{{polling_url}}?timestamp=' + lastRequestTime, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest', // Custom header to indicate AJAX request
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.log(response)
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const fetchedPosts = data.posts; // Assuming data.posts contains the fetched posts
+                        lastRequestTime = data.timestamp; // Update the last request time
+
+                        // If there are new posts since the last request time, show the banner to notify the user
+                        if (fetchedPosts.length > 0) {
+                            const slidingContainer = document.getElementById('sliding-container');
+                            const newPostBanner = document.getElementById('new-post-banner');
+                            const newPostBannerContent = document.getElementById('new-post-banner-content');
+                            newPostBanner.style.opacity = '100%';
+                            slidingContainer.classList.add('show-banner')
+                            newPostBannerContent.textContent = `You have received new posts, refresh the page to see them!`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+                }, 10000);
+            });
+
+        </script>
+    {% endif %} 
+{% endblock %} 

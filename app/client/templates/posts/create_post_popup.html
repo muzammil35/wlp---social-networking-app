@@ -1,0 +1,86 @@
+<div id="create-post-modal-container" style="display:none;">
+    <div id="create-post-modal">
+        <div class="modal-header">
+            <h2>Create Post</h2>
+            <span onclick="closeModal()">&times;</span>
+        </div>
+        <form method="post" action="{% url 'client:post_create' %}" enctype="multipart/form-data" id="create-post-form">
+            {% csrf_token %}
+            {{ post_create_form.title }}
+            {{ post_create_form.description}}
+            {{ post_create_form.content }}
+            {{ post_create_form.image }}
+
+            <div class="selectors">
+                {{ post_create_form.visibility }}
+                {{ post_create_form.contentType}}
+            </div>
+            <div class="footer">
+                <p id="post-warning-footer"></p>
+                <button type="submit">Post</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+
+<script>
+    let modal = document.getElementById('create-post-modal-container');
+    document.getElementById('createPostBtn').onclick = function() {
+        modal.style.display = 'flex';
+        // Focus on the first input field when the modal is opened
+        const postTitle = document.getElementById('id_title');
+        console.log(postTitle)
+        postTitle.focus();
+    }
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Update form depending on selected content type
+    // Hide and show certain form fields based on the content type
+    const updateForm = () => {
+        if (contentType.value.includes('image')) {
+            // Remove the text field
+            const textInput = document.getElementById('id_content');
+            textInput.style.display = 'none';
+
+            // Show the image field
+            const imageInput = document.getElementById('id_image');
+            imageInput.style.display = 'block';
+        }else{
+            // Remove the image field
+            const imageInput = document.getElementById('id_image');
+            imageInput.style.display = 'none';
+
+            // Show the text field
+            const textInput = document.getElementById('id_content');
+            textInput.style.display = 'block';
+        }
+    }
+
+    const updateWarningText = () => {
+        const warningText = document.getElementById('post-warning-footer');
+        if (visibility.value === 'FRIENDS') {
+            warningText.innerHTML = 'Note: This post will only be visible to you and your friends';
+        }else if (visibility.value === 'PUBLIC') {
+            warningText.innerHTML = 'Note: This post will be visible to everyone';
+        }else if (visibility.value === 'UNLISTED'){
+            warningText.innerHTML = 'Note: This post will be visible to everyone with the link';
+        
+        }
+    }
+
+    const contentType = document.getElementById('id_contentType');
+    const visibility = document.getElementById('id_visibility');
+    updateForm();
+    updateWarningText();
+    contentType.addEventListener('change', updateForm);
+    visibility.addEventListener('change', updateWarningText);
+</script>

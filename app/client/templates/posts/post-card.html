@@ -1,0 +1,64 @@
+{% load filters %}
+
+<article class="post-card">
+    <div class="post-header">
+        {% if post.author.profileImage%}
+            <img src="{{ post.author.profileImage }}" alt="avatar" class="author-avatar"
+            onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';"/>
+        {% else %}
+            <img src="{{ post.author.profile_image }}" alt="avatar" class="author-avatar"
+            onerror="if (this.src != 'error.jpg') this.src = 'https://www.gravatar.com/avatar/?d=mp';"/>
+        {% endif %}
+        
+        <div class="name-date">
+            <a href="{%url 'client:profile_detail' author_id=post.author.id|getId %}">{{ post.author.displayName }}</a>
+            <p class="date">{{ post.published|stringToDate }}</p>
+        </div>
+        <div class="post-action-container">
+            {% if request.user == post.author.user %}
+            <form method="post" action="{% url 'client:post_delete' post_id=post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary-action-button"><i class="fas fa-trash"></i></button>
+            </form>
+            <form method="get" action="{% url 'client:post_edit' post_id=post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary-action-button"><i class="fas fa-pen"></i></button>
+            </form>
+            {% endif %}
+            {% if user.is_authenticated and post.visibility == 'PUBLIC'  %}
+                <form method="post" action="{% url 'client:post_share' post_id=post.id|getId %}">
+                    {% csrf_token %}
+                    <button type="submit" class="secondary-action-button"><i class="fas fa-share"></i></button>
+                </form>
+            {% endif %}
+        </div>
+    
+    </div>
+
+    {% if post.contentType == 'image/png;base64' or post.contentType == 'image/jpeg;base64' %}
+        <div class="post-image-container">
+            <img src="{{ post.origin}}/image" alt="post image" class="post-image"/>
+        </div>
+        <p style="font-size:0.7rem;">{{ post.origin }}</p>
+    {% endif %}
+    <a href="{% url 'client:post_detail' post_id=post.id|getId %}">
+        <h1 class="title">{{ post.title }}</h1>
+    </a>
+    <div class="tags">
+        <p class="tag">{{ post.visibility }}</p>
+        {% if post.contentType == 'image/png;base64' or post.contentType == 'image/jpeg;base64' %}
+            <p class="tag">Image Post</p>
+        {% endif %}
+    </div>
+    <h2 class="description">({{ post.description }})</h2>
+    {% load markdown_filters %}
+    {% if post.contentType == "text/markdown" %}
+        <div class="markdown-content">
+            {{ post.content|markdown|safe|linebreaksbr }}
+        </div>
+    {% elif post.contentType != 'image/png;base64' and post.contentType != 'image/jpeg;base64'%}
+        <div class="post-content">
+            {{ post.content|linebreaksbr|truncateString }}
+        </div>
+    {% endif %}
+</article>

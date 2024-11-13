@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% include 'posts/post-card.html' with post=post %}
+
+{% comment %} TODO: For remote post, don't allow unlike {% endcomment %}
+
+<link rel="stylesheet" href="{% static 'comments.css' %}">
+
+<!-- Like functionality -->
+<div id="likeSection">
+    {% if user.is_authenticated %}
+            {% if user_has_liked %}
+                <!-- User already liked the post, show unlike option -->
+                <form action="{% url 'client:unlike_post' post_id=post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="like-btn liked"><i class="fas fa-heart"></i> Liked</button>
+                </form>
+            {% else %}
+                <!-- User hasn't liked the post yet, show like option -->
+                <form action="{% url 'client:like_post' post_id=post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="like-btn unliked"><i class="far fa-heart"></i> Like</button>
+                </form>
+            {% endif %}
+            {% if request.get_host in post.origin %}
+            <div class="likes-info">
+                <a href="{% url 'client:post_likes' post.id %}" class="view-likes-link">
+                    {{ likes_count }} Likes
+                </a>
+            </div>
+    {%endif%}  
+</div>
+{% else %}
+    <a href="{% url 'client:login' %}?next={{ request.path }}" class="like-btn unliked">Log in to Like</a>
+{% endif %}
+
+<!-- Comments Section -->
+<div id="commentsSection">
+    <h3>Comments</h3>
+    {% for comment in comments %}
+        <div class="comment">
+            <span>{{ comment.author.displayName }}: {{ comment.comment }}</span>
+            {% if request.user.is_authenticated and request.user == comment.author.user %}
+                <div class="button-container">
+                    <a href="{% url 'client:edit_comment' comment.id %}" class="edit-delete-btn"><i class="fas fa-pen"></i></a>
+                    <a href="{% url 'client:delete_comment' comment.id %}" class="edit-delete-btn" onclick="return confirm('Are you sure?');"><i class="fas fa-trash"></i></a>
+                </div>  
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+    
+{% if request.user.is_authenticated %}
+    {% if show_comment_form %}
+        <div id="commentFormContainer">
+            <form action="{% url 'client:submit_comment' post_id=post.id %}" method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="add-comment-btn">Post Comment</button>
+            </form>
+        </div>
+    {% else %}
+    <a href="?add_comment=true" class="add-comment-btn">Add a comment</a>
+    {% endif %}
+{% else %}
+    <a href="{% url 'client:login' %}?next={{ request.path }}" class="add-comment-btn">Log in to add a comment</a>
+{% endif %}
+
+{% endblock %}

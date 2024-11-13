@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Likes for Post: "{{ post.title }}"</h2>
+<ul>
+    {% for author in authors %}
+    <li>{{ author.displayName }}</li>
+    {% empty %}
+    <li>No likes yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

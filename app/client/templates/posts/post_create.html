@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    
+    {% if isEdit %}
+        <h1 style="margin-bottom:1rem;">Edit Post</h1>
+        <form  method="post" action="{% url 'client:post_edit' post_id=post_id %}" class="styled-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Update Post" class="action-button">
+        </form>
+    {% else %}
+        <h1 style="margin-bottom:1rem;">Create Post</h1>
+        <form  method="post" action="{% url 'client:post_create' %}" class="styled-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Create Post" class="action-button">
+        </form>
+    {% endif %}
+
+
+    {% if form.subject.errors %}
+        <ol>
+        {% for error in form.subject.errors %}
+            <li><strong>{{ error|escape }}</strong></li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+
+    <script>
+        // Hide and show certain form fields based on the content type
+        const updateForm = () => {
+            if (contentType.value.includes('image')) {
+                // Remove the text field
+                const textInput = document.getElementById('id_content');
+                textInput.parentElement.style.display = 'none';
+    
+                // Show the image field
+                const imageInput = document.getElementById('id_image');
+                imageInput.parentElement.style.display = 'flex';
+            }else{
+                // Remove the image field
+                const imageInput = document.getElementById('id_image');
+                imageInput.parentElement.style.display = 'none';
+    
+                // Show the text field
+                const textInput = document.getElementById('id_content');
+                textInput.parentElement.style.display = 'flex';
+            }
+        }
+    
+        const contentType = document.getElementById('id_contentType');
+        updateForm()
+        contentType.addEventListener('change', updateForm);
+    </script>
+{% endblock %}
+

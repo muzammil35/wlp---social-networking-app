@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="login-form">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        // Check if a token exists in local storage
+        var url = window.location.href;
+        const token = sessionStorage.getItem('token');
+        console.log(token)
+        // Parse the URL to extract query parameters
+        var params = new URLSearchParams(url.split('?')[1]);
+        // Get the value of the "redirect" query parameter
+        var redirectParam = params.get('redirect');
+        if (token) {
+            document.getElementById('login-form').setAttribute('action', "{% url 'client:login' %}");
+            fetch(this.getAttribute('action'), { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}` // Include token in the Authorization header
+                },
+                body: JSON.stringify({token: token})
+            })
+        }
+        if (!token) {
+            if (redirectParam && redirectParam === 'True') {
+
+                // Perform the desired action here
+                document.getElementById('login-form').setAttribute('action', "{% url 'client:login' %}");
+            } else{
+                window.location.href = "{% url 'client:register view' %}";
+            }
+        }
+
+        // Add event listener to handle form submission
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.getAttribute('action'), {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    // Store the token securely (e.g., in session storage)
+                    console.log(" the token exists!")
+                    console.log(data.token)
+                    sessionStorage.setItem('token', data.token);
+                    window.location.href = "{% url 'client:landing-page' %}";
+                } else {
+                    alert('Login failed. Please check your credentials.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Login failed. An error occurred while logging in.');
+            });
+        });
+    </script>
+</body>
+</html>
